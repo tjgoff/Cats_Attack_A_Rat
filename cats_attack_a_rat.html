@@ -76,7 +76,7 @@ html,body {
 var frameRate = 50, interval;
 var corners, startTime;
 var gameActive = false, pageLoaded = false;
-var clock, seconds = 0, minutes = 0, hours = 0, t, timeMult = 1;
+var clock, clockHeight = 0, seconds = 0, minutes = 0, hours = 0, t, timeMult = 1;
 
 //The rat, Brie, follows the mouse pointer
 var rat = {
@@ -88,9 +88,13 @@ var rat = {
     width: 20,
     goal: [],
     updateGoal : function() {
-       this.goal = [window.mouseX, window.mouseY];
-       //adjust rat's speed to prevent overshooting goal
-       this.speed = Math.min(this.maxSpeed, distance(this.pos, this.goal));
+        this.goal = [window.mouseX, window.mouseY - clockHeight];
+        //adjust rat's speed to prevent overshooting goal
+        var dist = distance(this.pos, this.goal);
+        if ( dist < 3 ) 
+            this.speed = 0;
+        else
+            this.speed = Math.min(this.maxSpeed, dist);
     }
 };
 
@@ -203,8 +207,9 @@ var cat4 = {
         }
     }
 };
-//for looping over the cats
-var cats = [cat1, cat2, cat3, cat4];
+
+var cats = [cat1, cat2, cat3, cat4];//for looping over the cats
+var players = [rat, cat1, cat2, cat3, cat4];//for looping over all players
 
 document.onmousemove = function(e) {
     var event = e || window.event;
@@ -242,23 +247,18 @@ function updateGameState() {
     if(window.mouseX == undefined || window.mouseY == undefined || gameActive == false){
         return;
     }
-    if(gameActive){
-        //Move rat by max speed unless close to pointer/goal
-        if (distance(rat.pos, [window.mouseX, window.mouseY]) > 2) {
-            rat.updateGoal();
-            moveTowardGoal(rat);
-        }
-        //each cat AI gets to update and move
-        for(var i=0; i < cats.length; i++){
-            cats[i].updateGoal();
-            moveTowardGoal(cats[i]);
-        }
+    
+    //each rat/cat gets to update and move
+    for(var i=0; i < players.length; i++){
+        players[i].updateGoal();
+        moveTowardGoal(players[i]);
     }
+    
     //Check lose condition and update cat image if near rat
-    for(var i=0; i < cats.length; i++){
+    for(i=0; i < cats.length; i++){
         if( inRange(rat.pos, cats[i].pos, cats[i].width*1.1))
             endGame();
-        if( inRange(rat.pos, cats[i].pos, cats[i].width*2.5))
+        else if( inRange(rat.pos, cats[i].pos, cats[i].width*2.5))
             $('#'+cats[i].id).attr("src", cats[i].imgNear);
         else
             $('#'+cats[i].id).attr("src", cats[i].img);
@@ -325,6 +325,7 @@ window.onload = function() {
     rat.width = $('#ratPic').width()/2;
     cat1.height = cat2.height = cat3.height = $('#cat1').height()/2;
     cat1.width = cat2.width = cat3.width = $('#cat1').width()/2;
+    clockHeight = $('#clock').height();
     corners = [ [cat3.width, cat3.height],
                 [window.innerWidth-cat3.width, cat3.height],
                 [window.innerWidth-cat3.width, window.innerHeight-cat3.height],
@@ -364,9 +365,7 @@ window.onload = function() {
             <img id="cat3" class="game" src="cat-pink.png" style="z-index:3;">
             <img id="cat4" class="game" src="cat-yellow.png" style="z-index:4;">
         </div>
-
     </div>
-
 
 </body>
 </html> 
