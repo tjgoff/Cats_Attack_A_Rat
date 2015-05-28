@@ -1,4 +1,41 @@
 <!DOCTYPE html>
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2015 tjgoff
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!-- 
+Author: TJ Goff
+Date: May 27, 2015
+Version: 1.0
+
+In the game Cats Attack A Rat, your goal is to guide the Rat, Brie, to stay
+away from the cats, Willy, Whiskers, Wendy and Bob, for as long as possible.
+Each cat has a distinct style of attack which will allow you to anticipate 
+their behavior, and even manipulate them in order to keep a safe path open 
+for escape.
+
+The game is largely inspired by Pac Man, and has several references to the
+original game.
+-->
 <html>
 <head>
 <style>
@@ -45,7 +82,7 @@ var clock, seconds = 0, minutes = 0, hours = 0, t, timeMult = 1;
 var rat = {
     pos: [],
     speed : 8, //number of pixels rat can move per frame
-    maxSpeed: 7,
+    maxSpeed: 8,
     id: "ratPic",
     height: 20,
     width: 20,
