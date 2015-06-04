@@ -1,0 +1,29 @@
+html,body {
+    margin:0;
+    padding:0;
+    height:100%;
+    overflow: hidden;
+}
+#wrapper {
+    min-height:100%;
+    position:relative;
+}
+#header {
+    background:#ededed;
+    padding:10px;
+    text-align: center;
+}
+#startReset {
+    margin-top:20%;
+}
+#clock, #startReset {
+    margin-left: 45%;
+    font-size: 30px;
+}
+#time_multiplier {
+    margin-left: 45%;
+}
+.game {
+    display: none;
+    position:absolute;
+}
