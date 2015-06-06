@@ -2,6 +2,7 @@ var frameRate = 50, interval;
 var corners, startTime;
 var gameActive = false, pageLoaded = false;
 var clock, clockHeight = 0, seconds = 0, minutes = 0, hours = 0, t, timeMult = 1;
+var standardArea = 1520000, screenFactor = 1;//used to scale up size/speed of game for large displays
 
 //The rat, Brie, follows the mouse pointer
 var rat = {
@@ -16,13 +17,14 @@ var rat = {
         this.goal = [window.mouseX+24, window.mouseY - clockHeight+20];//offsets for cheese cursor size
         //adjust rat's speed to prevent overshooting goal
         var dist = distance(this.pos, this.goal);
-        if ( dist < 3 ) 
+        if ( dist < 3 ) {
             this.speed = 0;
-        else
+        } else {
             this.speed = Math.min(this.maxSpeed, dist);
-        //rotate the rat image to face the goal
-        var theta = Math.atan2(this.goal[1] - this.pos[1], this.goal[0] - this.pos[0]);
-        document.getElementById("ratPic").style.transform = "rotate("+(theta*57.296-90)+"deg)";
+            //rotate the rat image to face the goal (if not too close already)
+            var theta = Math.atan2(this.goal[1] - this.pos[1], this.goal[0] - this.pos[0]);
+            document.getElementById("ratPic").style.transform = "rotate("+(theta*57.296-90)+"deg)";
+        }
     }
 };
 
@@ -178,8 +180,8 @@ function inRange(pos1, pos2, dist) {
 
 function moveTowardGoal(mover) {
     var theta = Math.atan2(mover.goal[1] - mover.pos[1], mover.goal[0] - mover.pos[0]);
-    mover.pos[0] += Math.round( mover.speed * timeMult * Math.cos(theta) );
-    mover.pos[1] += Math.round( mover.speed * timeMult * Math.sin(theta) );
+    mover.pos[0] += Math.round( mover.speed * timeMult * screenFactor * Math.cos(theta) );
+    mover.pos[1] += Math.round( mover.speed * timeMult * screenFactor * Math.sin(theta) );
     document.getElementById(mover.id).style.marginLeft = mover.pos[0] - mover.width + "px";
     document.getElementById(mover.id).style.marginTop = mover.pos[1] - mover.height + "px";
 }
@@ -263,7 +265,11 @@ function endGame() {
     document.getElementsByTagName("body")[0].style.cursor = "default";
 }
 
-window.onload = function() {
+function adjustToWindow(){
+    //Scale size/speed of game elements based on display size. 
+    //Average of 1 and ratio of expected screen size
+    screenFactor = (1+(window.innerHeight * window.innerWidth / standardArea))/2;
+    
     //use loaded elements to get game dimensions
     rat.height = $('#ratPic').height()/2;
     rat.width = $('#ratPic').width()/2;
@@ -274,6 +280,14 @@ window.onload = function() {
                 [window.innerWidth-cat3.width, cat3.height],
                 [window.innerWidth-cat3.width, window.innerHeight-cat3.height],
                 [cat3.width, window.innerHeight-cat3.height] ];
+}
+
+window.onresize = function(event) {
+    adjustToWindow();
+};
+
+window.onload = function() {
+    adjustToWindow();
     //Hide game elements until game starts
     setClassDisplay("game", "none");
     pageLoaded = true;
