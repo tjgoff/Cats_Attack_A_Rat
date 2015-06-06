@@ -70,37 +70,51 @@ var cat3 = {
     height:46,
     width: 50,
     state: "CW", //toggles clockwise or counter-clockwise edge movement
+    setToEdgeState: function(){
+        if(this.state=="ATK"){
+            if(Math.random() > 0.5)
+                this.state = "CW";
+            else
+                this.state = "CCW";
+        }
+    },
+    isAtTop: function(){return this.pos[1] <= this.height;},
+    isAtRight: function(){return this.pos[0] >= window.innerWidth - this.width;},
+    isAtBottom: function(){return this.pos[1] >= window.innerHeight - this.height;},
+    isAtLeft: function(){return this.pos[0] <= this.width;},
     updateGoal : function() {
         if( inRange( this.pos, this.goal, this.width) ) {  //pick a corner for new goal
-            if(this.pos[1] <= this.height && 
-               this.pos[0] < window.innerWidth - this.width){ //top -> goal is top right
+            if( this.isAtTop() && !this.isAtRight()){//goal = top right
                 this.goal = corners[1];
-            } else if(this.pos[0] >= window.innerWidth - this.width && 
-               this.pos[1] < window.innerHeight - this.height) { //right -> goal in bottom right
+                this.setToEdgeState();
+            } else if(this.isAtRight() && !this.isAtBottom()){//goal = bottom right
                 this.goal = corners[2];
-            } else if(this.pos[1] >= window.innerHeight - this.height &&
-               this.pos[0] > this.width) { //bottom -> goal in bottom left
+                this.setToEdgeState();
+            } else if(this.isAtBottom() && !this.isAtLeft()){//goal = bottom left
                 this.goal = corners[3];
-            } else if(this.pos[0] <= this.width &&
-               this.pos[1] > this.height) { //left -> goal in top left
+                this.setToEdgeState();
+            } else if(this.isAtLeft() && !this.isAtTop()) { //goal = top left
                 this.goal = corners[0];
+                this.setToEdgeState();
             }
         }
-        //attack if rat is aligned orthogonally (only when near edge)
-        if (this.pos[0]<=this.width || this.pos[0]>=window.innerWidth-this.width ||
-            this.pos[1]<=this.height || this.pos[1]>=window.innerHeight-this.height) {
-            if( Math.abs(this.pos[0]-rat.pos[0]) < rat.width ) { //vertical attack
-                if( this.pos[1] <= this.height)
-                    this.goal = [this.pos[0], corners[2][1]]; //downward
-                else
-                    this.goal = [this.pos[0], corners[0][1]]; //upward
-                //TODO randomize CW/CCW
-            } else if( Math.abs(this.pos[1]-rat.pos[1]) < rat.height ) { //horizontal attack
-                if( this.pos[0] <= this.width)
-                    this.goal = [corners[2][0], this.pos[1]];//rightward
-                else
-                    this.goal = [corners[0][0], this.pos[1]];//leftward
-                //TODO randomize CW/CCW??
+        //attack if rat is aligned orthogonally (only when roaming edge)
+        if(this.state!="ATK"){
+            if (this.isAtLeft() || this.isAtRight() ||
+                this.isAtTop() || this.isAtBottom()) {
+                if( Math.abs(this.pos[0]-rat.pos[0]) < rat.width ) { //vertical attack
+                    if( this.pos[1] <= this.height)
+                        this.goal = [this.pos[0], corners[2][1]]; //downward
+                    else
+                        this.goal = [this.pos[0], corners[0][1]]; //upward
+                    this.state = "ATK";
+                } else if( Math.abs(this.pos[1]-rat.pos[1]) < rat.height ) { //horizontal attack
+                    if( this.pos[0] <= this.width)
+                        this.goal = [corners[2][0], this.pos[1]];//rightward
+                    else
+                        this.goal = [corners[0][0], this.pos[1]];//leftward
+                   this.state = "ATK";
+                }
             }
         }
     }
@@ -260,7 +274,6 @@ window.onload = function() {
                 [window.innerWidth-cat3.width, cat3.height],
                 [window.innerWidth-cat3.width, window.innerHeight-cat3.height],
                 [cat3.width, window.innerHeight-cat3.height] ];
-    
     //Hide game elements until game starts
     setClassDisplay("game", "none");
     pageLoaded = true;
