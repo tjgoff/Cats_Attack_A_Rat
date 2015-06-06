@@ -85,19 +85,29 @@ var cat3 = {
     isAtBottom: function(){return this.pos[1] >= window.innerHeight - this.height;},
     isAtLeft: function(){return this.pos[0] <= this.width;},
     updateGoal : function() {
+        console.log("state="+this.state);
         if( inRange( this.pos, this.goal, this.width) ) {  //pick a corner for new goal
-            if( this.isAtTop() && !this.isAtRight()){//goal = top right
-                this.goal = corners[1];
-                this.setToEdgeState();
-            } else if(this.isAtRight() && !this.isAtBottom()){//goal = bottom right
-                this.goal = corners[2];
-                this.setToEdgeState();
-            } else if(this.isAtBottom() && !this.isAtLeft()){//goal = bottom left
-                this.goal = corners[3];
-                this.setToEdgeState();
-            } else if(this.isAtLeft() && !this.isAtTop()) { //goal = top left
-                this.goal = corners[0];
-                this.setToEdgeState();
+            this.setToEdgeState();
+            if(this.state=="CW"){
+                if( this.isAtTop() && !this.isAtRight()){//goal = top right
+                    this.goal = corners[1];
+                } else if(this.isAtLeft()){//goal = top left
+                    this.goal = corners[0];
+                } else if(this.isAtBottom()){//goal = bottom left
+                    this.goal = corners[3];
+                } else if(this.isAtRight()) { //goal = bottom right
+                    this.goal = corners[2];
+                }
+            } else if(this.state=="CCW"){
+                if( this.isAtTop() && !this.isAtLeft()){//goal = top left
+                    this.goal = corners[0];
+                } else if(this.isAtRight()){//goal = top right
+                    this.goal = corners[1];
+                } else if(this.isAtBottom()){//goal = bottom right
+                    this.goal = corners[2];
+                } else if(this.isAtLeft()) { //goal = bottom left
+                    this.goal = corners[3];
+                }
             }
         }
         //attack if rat is aligned orthogonally (only when roaming edge)
@@ -143,7 +153,7 @@ var cat4 = {
         //add repulsive forces from other cats (large forces that drop with distance factor)
         for (var i=0; i < 3; i++) {
             theta = Math.atan2(cats[i].pos[1] - this.pos[1], cats[i].pos[0] - this.pos[0]);
-            distF = Math.pow(distance(this.pos, cats[i].pos),0.57);
+            distF = Math.pow(distance(this.pos, cats[i].pos),0.56);
             if(distF != 0) {
                 this.goal[0] += Math.round( this.repulse * Math.cos(theta) ) / distF;
                 this.goal[1] += Math.round( this.repulse * Math.sin(theta) ) / distF;
