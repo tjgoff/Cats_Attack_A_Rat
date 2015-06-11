@@ -14,14 +14,19 @@ html,body {
     text-align: center;
 }
 #startReset {
-    margin-top:10%;
+    margin-top:5%;
 }
 #clock, #startReset {
     margin-left: 45%;
     font-size: 30px;
 }
-#timeControls, #soundControls {
+#timeControls, #soundControls, #tutorial {
     margin-left: 45%;
+}
+.bioImg {
+  width:40px;
+  height:40px;
+  vertical-align:middle;
 }
 .game {
     display: none;
