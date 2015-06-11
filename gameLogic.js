@@ -1,8 +1,40 @@
 var frameRate = 50, interval;
 var corners, startTime;
-var gameActive = false, pageLoaded = false;
+var gameActive = false, pageLoaded = false, soundsOn = false, music;
 var clock, clockHeight = 0, seconds = 0, minutes = 0, hours = 0, t, timeMult = 1;
 var standardArea = 1520000, screenFactor = 1;//used to scale up size/speed of game for large displays
+
+//Audio channels for sounds
+var num_audioChannels = 5;
+var audioChannels = new Array();
+for (var i=0; i < num_audioChannels; i++) {
+    audioChannels[i] = new Array();
+    audioChannels[i]['channel'] = new Audio();
+    audioChannels[i]['done'] = -1;//channel is available if done < timestamp
+}
+
+//Given the id of an audio element, play the corresponding sound on first available channel
+function play_sound(id) {
+	for (var i=0; i < audioChannels.length; i++) {
+		now = new Date();
+		if (audioChannels[i]['done'] < now.getTime()) {	//check if channel done playing
+			audioChannels[i]['done'] = now.getTime() + document.getElementById(id).duration*1000;
+			audioChannels[i]['channel'].src = document.getElementById(id).src;
+			audioChannels[i]['channel'].load();
+			audioChannels[i]['channel'].play();
+			break;
+		}
+	}
+}
+
+//Stops all sounds from playing (does not end callback to restart background music)
+function stopSounds() {
+    for (var i=0; i < audioChannels.length; i++) {
+        audioChannels[i]['done'] = -1;
+        audioChannels[i]['channel'].pause();
+        audioChannels[i]['channel'].currentTime = 0;
+	}
+}
 
 //The rat, Brie, follows the mouse pointer
 var rat = {
@@ -36,6 +68,7 @@ var cat1 = {
     id: "cat1",
     img: "cat-orange.png",
     imgNear: "cat-orange-bite.png",
+    sound: 'meow1',
     height: 46,
     width: 50,
     updateGoal : function() {
@@ -51,6 +84,7 @@ var cat2 = {
     id: "cat2",
     img: "cat-blue.png",
     imgNear: "cat-blue-bite.png",
+    sound: 'meow2',
     height: 46,
     width: 50,
     updateGoal : function() {
@@ -69,6 +103,7 @@ var cat3 = {
     id:"cat3",
     img: "cat-pink.png",
     imgNear: "cat-pink-bite.png",
+    sound: 'meow3',
     height:46,
     width: 50,
     state: "CW", //toggles clockwise or counter-clockwise edge movement
@@ -85,7 +120,6 @@ var cat3 = {
     isAtBottom: function(){return this.pos[1] >= window.innerHeight - this.height;},
     isAtLeft: function(){return this.pos[0] <= this.width;},
     updateGoal : function() {
-        console.log("state="+this.state);
         if( inRange( this.pos, this.goal, this.width) ) {  //pick a corner for new goal
             this.setToEdgeState();
             if(this.state=="CW"){
@@ -141,6 +175,7 @@ var cat4 = {
     id: "cat4",
     img: "cat-yellow.png",
     imgNear: "cat-yellow-bite.png",
+    sound: 'meow4',
     height: 46,
     width: 50,
     updateGoal : function() {
@@ -165,12 +200,14 @@ var cat4 = {
 var cats = [cat1, cat2, cat3, cat4];//for looping over the cats
 var players = [rat, cat1, cat2, cat3, cat4];//for looping over all players
 
+//keep track of the mouse pointer position in order to drive the rat
 document.onmousemove = function(e) {
     var event = e || window.event;
     window.mouseX = event.clientX;
     window.mouseY = event.clientY;
 }
 
+//utility function for setting display: value; CSS for all elements of a class
 function setClassDisplay(className, disp) {
     var x = document.getElementsByClassName(className);
     for (var i = 0; i < x.length; i++) {
@@ -178,6 +215,7 @@ function setClassDisplay(className, disp) {
     }
 }
 
+//return distance between two 2-D points
 function distance(p1, p2) {
     var x = p1[0] - p2[0];
     var y = p1[1] - p2[1];
@@ -188,6 +226,7 @@ function inRange(pos1, pos2, dist) {
     return distance(pos1, pos2) <= dist;
 }
 
+//Each rat/cat should first update it's goal,then this function moves them toward the goal
 function moveTowardGoal(mover) {
     var theta = Math.atan2(mover.goal[1] - mover.pos[1], mover.goal[0] - mover.pos[0]);
     mover.pos[0] += Math.round( mover.speed * timeMult * screenFactor * Math.cos(theta) );
@@ -210,15 +249,20 @@ function updateGameState() {
     
     //Check lose condition and update cat image if near rat
     for(i=0; i < cats.length; i++){
-        if( inRange(rat.pos, cats[i].pos, cats[i].width*1.1))
+        if( inRange(rat.pos, cats[i].pos, cats[i].width*1.1)) {
             endGame();
-        else if( inRange(rat.pos, cats[i].pos, cats[i].width*2.5))
+        } else if( inRange(rat.pos, cats[i].pos, cats[i].width*2.5)) {
+            if(soundsOn && $('#'+cats[i].id).attr("src") != cats[i].imgNear){
+                play_sound(cats[i].sound);//switching to "near" image + sound
+            }
             $('#'+cats[i].id).attr("src", cats[i].imgNear);
-        else
+        } else {
             $('#'+cats[i].id).attr("src", cats[i].img);
+        }
     }
 }
 
+//Track the player's progress on the timer
 function addSec() {
     seconds++;
     if (seconds >= 60) {
@@ -238,10 +282,24 @@ function timer() {
     t = setTimeout(addSec, 1000/timeMult);
 }
 
+function startMusic() {
+    play_sound('backgroundMusic');
+    music = setTimeout(startMusic, document.getElementById('backgroundMusic').duration*1000 );
+}
+
 function startGame() {
     if(!pageLoaded) {
         return;//the page must finish loading before game can start
     }
+    //turn sounds/music on/off
+    if (document.getElementById('soundsOn').checked) {
+            soundsOn = true;
+    } else {
+         soundsOn = false;
+    }
+    if (document.getElementById('musicOn').checked)
+        startMusic();
+    //Set time tracking values
     timeMult = Number($('#timeMultiplier').val());
     interval = setInterval(updateGameState, 1000/(frameRate));
     gameActive = true;
@@ -268,6 +326,8 @@ function endGame() {
     clearInterval(interval);
     gameActive = false;
     clearTimeout(t);
+    clearTimeout(music);
+    stopSounds();
     //show non-game elements
     setClassDisplay("preGame", "block");
     //hide game elements

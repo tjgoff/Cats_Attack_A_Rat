@@ -20,7 +20,7 @@ html,body {
     margin-left: 45%;
     font-size: 30px;
 }
-#time_multiplier {
+#timeControls, #soundControls {
     margin-left: 45%;
 }
 .game {

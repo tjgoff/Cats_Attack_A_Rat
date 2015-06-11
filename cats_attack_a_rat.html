@@ -52,18 +52,34 @@ original game.
             By TJ Goff
             <br />Available under the <a rel="license" href="http://opensource.org/licenses/MIT">MIT License</a>
             on <a href="https://github.com/tjgoff/Cats_Attack_A_Rat">github</a>.
+            <!--Cat sounds edited from files provided by sweetsoundeffects.com
+            Cat sounds may be used for personal or commercial projects, with attribution appreciated-->
+            <audio id="meow1" src="meow1.wav" preload="auto"></audio>
+            <audio id="meow2" src="meow2.wav" preload="auto"></audio>
+            <audio id="meow3" src="meow3.wav" preload="auto"></audio>
+            <audio id="meow4" src="meow4.wav" preload="auto"></audio>
+            <!-- this recording of "The Entertainer" (by Scott Joplin) is in the public domain
+            http://en.wikipedia.org/wiki/File:The_Entertainer_-_Scott_Joplin.ogg -->
+            <audio id="backgroundMusic" src="The_Entertainer_-_Scott_Joplin.ogg" preload="auto"></audio>
         </div>
         
         <div id="content">
             <button id="startReset" class="preGame" type="button" onclick="startGame()">Start the game!</button>
             <div id="clock"><time>00:00:00</time></div>
-            <div id="time_multiplier" class="preGame">
+            <div id="timeControls" class="preGame">
                 Speed Control: 
                 <select id="timeMultiplier">
                     <option value="0.75">Slow</option>
                     <option value="1" selected>Normal</option>
                     <option value="1.5">Fast</option>
                 </select>
+            </div>
+            <div id="soundControls" class="preGame">
+                Play sounds:
+                <input id="soundsOn" type="checkbox" checked/>
+                <br />
+                Play music:
+                <input id="musicOn" type="checkbox" checked/>
             </div>
             
             <img id="ratPic" class="game" src="rat.png" width="40" height="65" style="z-index:5;">
