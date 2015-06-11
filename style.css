@@ -1,34 +1,41 @@
 html,body {
-    margin:0;
-    padding:0;
-    height:100%;
+    margin: 0;
+    padding: 0;
+    height: 100%;
     overflow: hidden;
 }
+
 #wrapper {
-    min-height:100%;
-    position:relative;
+    min-height: 100%;
+    position: relative;
 }
+
 #header {
-    background:#ededed;
-    padding:10px;
+    background: #ededed;
+    padding: 10px;
     text-align: center;
 }
+
 #startReset {
-    margin-top:3%;
+    margin-top: 3%;
 }
+
 #clock, #startReset {
-    margin-left: 45%;
     font-size: 30px;
 }
-#timeControls, #soundControls, #tutorial {
-    margin-left: 45%;
+
+.pre-game.middle{
+    width: 221px;
+    margin: 0 auto;
 }
+
 .bioImg {
-  width:40px;
-  height:40px;
-  vertical-align:middle;
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
 }
+
 .game {
     display: none;
-    position:absolute;
+    position: absolute;
 }

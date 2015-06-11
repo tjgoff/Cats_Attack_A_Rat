@@ -44,7 +44,7 @@ original game.
 <body>
 
     <div id="wrapper">
-        <div id="header" class="preGame">
+        <div id="header" class="pre-game">
             <h2 id="title">Cats Attack A Rat!</h2>
             <br />
             By TJ Goff
@@ -62,42 +62,47 @@ original game.
         </div>
         
         <div id="content">
-            <button id="startReset" class="preGame" type="button" onclick="startGame()">Start the game!</button>
-            <div id="clock"><time>00:00:00</time></div>
-            <div id="timeControls" class="preGame">
-                Speed Control: 
-                <select id="timeMultiplier">
-                    <option value="0.75">Slow</option>
-                    <option value="1" selected>Normal</option>
-                    <option value="1.5">Fast</option>
-                </select>
-            </div>
-            <div id="soundControls" class="preGame">
-                Play sounds:
-                <input id="soundsOn" type="checkbox" checked/>
-                <br />
-                Play music:
-                <input id="musicOn" type="checkbox" checked/>
-            </div>
-            <div id="tutorial" class="preGame">
-                <br />
-                <h3>Cast of characters:</h3>
-                <img src="rat.png" class="bioImg" style="transform: rotate(-90deg); 
-                          height:56px; margin-right:5px;" > Brie: The brave
-                <br />
-                <br />
-                <img src="cat-orange.png" class="bioImg"> Willy: The follower
-                <br />
-                <br />
-                <img src="cat-blue.png" class="bioImg"> Whiskers: The wanderer
-                <br />
-                <br />
-                <img src="cat-pink.png" class="bioImg"> Wendy: The dasher
-                <br />
-                <br />
-                <img src="cat-yellow.png" class="bioImg"> Bob: The flanker
-            </div>
-            
+            <div class="pre-game middle">
+                <button id="startReset" type="button" onclick="startGame()">Start the game!</button>
+                <div id="clock"><time>00:00:00</time></div>
+                <div class="leaderboard-name preGame">
+                    Name:
+                    <input type="text" name="name">
+                </div>
+                <div id="timeControls">
+                    Speed Control: 
+                    <select id="timeMultiplier">
+                        <option value="0.75">Slow</option>
+                        <option value="1" selected>Normal</option>
+                        <option value="1.5">Fast</option>
+                    </select>
+                </div>
+                <div id="soundControls">
+                    Play sounds:
+                    <input id="soundsOn" type="checkbox" checked/>
+                    <br />
+                    Play music:
+                    <input id="musicOn" type="checkbox" checked/>
+                </div>
+                <div id="tutorial">
+                    <br />
+                    <h3>Cast of characters:</h3>
+                    <img src="rat.png" class="bioImg" style="transform: rotate(-90deg); 
+                              height:56px; margin-right:5px;" > Brie: The brave
+                    <br />
+                    <br />
+                    <img src="cat-orange.png" class="bioImg"> Willy: The follower
+                    <br />
+                    <br />
+                    <img src="cat-blue.png" class="bioImg"> Whiskers: The wanderer
+                    <br />
+                    <br />
+                    <img src="cat-pink.png" class="bioImg"> Wendy: The dasher
+                    <br />
+                    <br />
+                    <img src="cat-yellow.png" class="bioImg"> Bob: The flanker
+                </div>
+            </div>            
             
             <img id="ratPic" class="game" src="rat.png" width="40" height="65" style="z-index:5;">
             <img id="cat1" class="game" src="cat-orange.png" style="z-index:1;">

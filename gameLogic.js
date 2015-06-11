@@ -318,7 +318,7 @@ function startGame() {
     cat4.goal = [corners[3][0], corners[3][1]];
     
     setClassDisplay("game", "block");
-    setClassDisplay("preGame", "none");
+    setClassDisplay("pre-game", "none");
     document.getElementsByTagName("body")[0].style.cursor = "url(cheese.png), auto";
 }
 
@@ -329,7 +329,7 @@ function endGame() {
     clearTimeout(music);
     stopSounds();
     //show non-game elements
-    setClassDisplay("preGame", "block");
+    setClassDisplay("pre-game", "block");
     //hide game elements
     setClassDisplay("game", "none");
     document.getElementsByTagName("body")[0].style.cursor = "default";
