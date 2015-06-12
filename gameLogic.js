@@ -282,6 +282,11 @@ function timer() {
     t = setTimeout(addSec, 1000/timeMult);
 }
 
+function add_score(){
+    var time = $('#clock').text();
+    console.log(time);
+}
+
 function startMusic() {
     play_sound('backgroundMusic');
     music = setTimeout(startMusic, document.getElementById('backgroundMusic').duration*1000 );
@@ -332,6 +337,7 @@ function endGame() {
     setClassDisplay("pre-game", "block");
     //hide game elements
     setClassDisplay("game", "none");
+    add_score();
     document.getElementsByTagName("body")[0].style.cursor = "default";
 }
 
