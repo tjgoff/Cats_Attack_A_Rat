@@ -122,40 +122,6 @@ function timer() {
     t = setTimeout(addSec, 1000/timeMult);
 }
 
-function addScoreToBoard(){
-    //do a conversion into seconds for storage
-    seconds += minutes*60+hours*3600;
-    var name = $('.leaderboard-name > input').val();
-    name = name.replace(/\s+/g, '');
-    $("#scoreInput").val("");
-    var db = new Firebase('https://amber-torch-7772.firebaseIO.com');
-
-    if (name.length === 0)
-        return;
-
-    db.once('value', function(dataSnapshot) {
-        // store dataSnapshot for use in below examples.
-        var data = dataSnapshot.val();
-        var user = data[name];
-        var userScoreRef = db.child(name);
-        if(user && user.score && user.score < seconds){
-            // Use setWithPriority to put the name / score in Firebase, and set the priority to be the score.
-            userScoreRef.setWithPriority({ name:name, score:seconds }, seconds);
-        } else if (!user){
-            userScoreRef.setWithPriority({ name:name, score:seconds }, seconds);
-        }
-    });
-}
-
-function secToTime(sec){
-    var seconds = Math.floor(sec%60);
-     sec /= 60;
-    var minutes = Math.floor(sec%60);
-     sec /= 60;
-    var hours = Math.floor(sec)
-    return {"hours" : hours, "minutes" : minutes, "seconds" : seconds};
-}
-
 function startMusic() {
     play_sound('backgroundMusic');
     music = setTimeout(startMusic, document.getElementById('backgroundMusic').duration*1000 );
@@ -236,4 +202,50 @@ window.onload = function() {
     //Hide game elements until game starts
     setClassDisplay("game", "none");
     pageLoaded = true;
+}
+
+
+
+/*Leaderboard functions*/
+
+function addScoreToBoard(){
+    //do a conversion into seconds for storage
+    seconds += minutes*60+hours*3600;
+    var name = $('.leaderboard-name > input').val();
+    name = name.replace(/\s+/g, '');
+    $("#scoreInput").val("");
+    var db = new Firebase('https://amber-torch-7772.firebaseIO.com');
+
+    if (name.length === 0)
+        return;
+
+    db.once('value', function(dataSnapshot) {
+        // store dataSnapshot for use in below examples.
+        var user, data = dataSnapshot.val();
+        if(data){
+            user = data[name];
+        }
+        var userScoreRef = db.child(name);
+        if((user && user.score && user.score < seconds)|| !user){
+            // Use setWithPriority to put the name / score in Firebase, and set the priority to be the score.
+            //store negative seconds because order by priority returns in ascending order
+            userScoreRef.setWithPriority({ name:name, score:seconds }, -seconds);
+        }
+    });
+}
+
+function secToTime(sec){
+    var seconds = Math.floor(sec%60);
+     sec /= 60;
+    var minutes = Math.floor(sec%60);
+     sec /= 60;
+    var hours = Math.floor(sec)
+    return {"hours" : hours, "minutes" : minutes, "seconds" : seconds};
+}
+
+function getLeaderboard(){
+    var db = new Firebase('https://amber-torch-7772.firebaseIO.com');
+    db.orderByPriority().on("value", function(snapshot) {
+        console.log(snapshot.val());
+    });
 }
