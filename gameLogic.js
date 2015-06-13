@@ -66,8 +66,8 @@ var cat1 = {
     speed : 4, //pixels per frame
     goal: [],
     id: "cat1",
-    img: "cat-orange.png",
-    imgNear: "cat-orange-bite.png",
+    img: "media/cat-orange.png",
+    imgNear: "media/cat-orange-bite.png",
     sound: 'meow1',
     height: 46,
     width: 50,
@@ -82,8 +82,8 @@ var cat2 = {
     speed : 8, //pixels per frame
     goal: [],
     id: "cat2",
-    img: "cat-blue.png",
-    imgNear: "cat-blue-bite.png",
+    img: "media/cat-blue.png",
+    imgNear: "media/cat-blue-bite.png",
     sound: 'meow2',
     height: 46,
     width: 50,
@@ -101,8 +101,8 @@ var cat3 = {
     speed : 11, //pixels per frame
     goal: [],
     id:"cat3",
-    img: "cat-pink.png",
-    imgNear: "cat-pink-bite.png",
+    img: "media/cat-pink.png",
+    imgNear: "media/cat-pink-bite.png",
     sound: 'meow3',
     height:46,
     width: 50,
@@ -173,8 +173,8 @@ var cat4 = {
     repulse: -60,//repulsive force from other cats
     goal: [],
     id: "cat4",
-    img: "cat-yellow.png",
-    imgNear: "cat-yellow-bite.png",
+    img: "media/cat-yellow.png",
+    imgNear: "media/cat-yellow-bite.png",
     sound: 'meow4',
     height: 46,
     width: 50,
@@ -319,7 +319,7 @@ function startGame() {
     
     setClassDisplay("game", "block");
     setClassDisplay("preGame", "none");
-    document.getElementsByTagName("body")[0].style.cursor = "url(cheese.png), auto";
+    document.getElementsByTagName("body")[0].style.cursor = "url(media/cheese.png), auto";
 }
 
 function endGame() {
