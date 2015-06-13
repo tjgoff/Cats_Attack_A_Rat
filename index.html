@@ -1,1 +1,113 @@
-howdy planet
+<!DOCTYPE html>
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2015 tjgoff
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+<!-- 
+Author: TJ Goff
+Date: May 27, 2015
+Version: 1.0
+
+In the game Cats Attack A Rat, your goal is to guide the Rat, Brie, to stay
+away from the cats, Willy, Whiskers, Wendy and Bob, for as long as possible.
+Each cat has a distinct style of attack which will allow you to anticipate 
+their behavior, and even manipulate them in order to keep a safe path open 
+for escape.
+
+The game is largely inspired by Pac Man, and has several references to the
+original game.
+-->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="gameLogic.js"></script>
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <div id="header" class="preGame">
+            <h2 id="title">Cats Attack A Rat!</h2>
+            <br />
+            By TJ Goff
+            <br />Available under the <a rel="license" href="http://opensource.org/licenses/MIT">MIT License</a>
+            on <a href="https://github.com/tjgoff/Cats_Attack_A_Rat">github</a>.
+            <!--Cat sounds edited from files provided by sweetsoundeffects.com
+            Cat sounds may be used for personal or commercial projects, with attribution appreciated-->
+            <audio id="meow1" src="meow1.wav" preload="auto"></audio>
+            <audio id="meow2" src="meow2.wav" preload="auto"></audio>
+            <audio id="meow3" src="meow3.wav" preload="auto"></audio>
+            <audio id="meow4" src="meow4.wav" preload="auto"></audio>
+            <!-- this recording of "The Entertainer" (by Scott Joplin) is in the public domain
+            http://en.wikipedia.org/wiki/File:The_Entertainer_-_Scott_Joplin.ogg -->
+            <audio id="backgroundMusic" src="The_Entertainer_-_Scott_Joplin.ogg" preload="auto"></audio>
+        </div>
+        
+        <div id="content">
+            <button id="startReset" class="preGame" type="button" onclick="startGame()">Start the game!</button>
+            <div id="clock"><time>00:00:00</time></div>
+            <div id="timeControls" class="preGame">
+                Speed Control: 
+                <select id="timeMultiplier">
+                    <option value="0.75">Slow</option>
+                    <option value="1" selected>Normal</option>
+                    <option value="1.5">Fast</option>
+                </select>
+            </div>
+            <div id="soundControls" class="preGame">
+                Play sounds:
+                <input id="soundsOn" type="checkbox" checked/>
+                <br />
+                Play music:
+                <input id="musicOn" type="checkbox" checked/>
+            </div>
+            <div id="tutorial" class="preGame">
+                <br />
+                <h3>Cast of characters:</h3>
+                <img src="rat.png" class="bioImg" style="transform: rotate(-90deg); 
+                          height:56px; margin-right:5px;" > Brie: The brave
+                <br />
+                <br />
+                <img src="cat-orange.png" class="bioImg"> Willy: The follower
+                <br />
+                <br />
+                <img src="cat-blue.png" class="bioImg"> Whiskers: The wanderer
+                <br />
+                <br />
+                <img src="cat-pink.png" class="bioImg"> Wendy: The dasher
+                <br />
+                <br />
+                <img src="cat-yellow.png" class="bioImg"> Bob: The flanker
+            </div>
+            
+            
+            <img id="ratPic" class="game" src="rat.png" width="40" height="65" style="z-index:5;">
+            <img id="cat1" class="game" src="cat-orange.png" style="z-index:1;">
+            <img id="cat2" class="game" src="cat-blue.png" style="z-index:2;">
+            <img id="cat3" class="game" src="cat-pink.png" style="z-index:3;">
+            <img id="cat4" class="game" src="cat-yellow.png" style="z-index:4;">
+        </div>
+    </div>
+
+</body>
+</html> 
