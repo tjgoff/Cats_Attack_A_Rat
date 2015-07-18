@@ -1,7 +1,7 @@
 var frameRate = 50, interval;
 var corners, startTime;
 var gameActive = false, pageLoaded = false, soundsOn = false, music;
-var clock, clockHeight = 0, seconds = 0, minutes = 0, hours = 0, t, timeMult = 1;
+var score, scoreHeight = 0, points = 0, t, timeMult = 1;
 var standardArea = 1520000, screenFactor = 1;//used to scale up size/speed of game for large displays
 
 //Audio channels for sounds
@@ -46,7 +46,7 @@ var rat = {
     width: 20,
     goal: [],
     updateGoal : function() {
-        this.goal = [window.mouseX+24, window.mouseY - clockHeight+20];//offsets for cheese cursor size
+        this.goal = [window.mouseX+24, window.mouseY - scoreHeight+20];//offsets for cheese cursor size
         //adjust rat's speed to prevent overshooting goal
         var dist = distance(this.pos, this.goal);
         if ( dist < 3 ) {
@@ -63,7 +63,7 @@ var rat = {
 //Cat1, Willy, goes straight for the rat, but slowly (chaser)
 var cat1 = {
     pos: [],
-    speed : 4, //pixels per frame
+    speed : 5, //pixels per frame
     goal: [],
     id: "cat1",
     img: "media/cat-orange.png",
@@ -181,18 +181,22 @@ var cat4 = {
     updateGoal : function() {
         //add up superposition forces from rat & cats
         //constant attractive force toward rat (doesn't scale with distance)
-        var theta = Math.atan2(rat.pos[1] - this.pos[1], rat.pos[0] - this.pos[0]);
+        var theta = Math.atan2((rat.pos[1]+rat.goal[1])/2 - this.pos[1], 
+                               (rat.pos[0]+rat.goal[0])/2 - this.pos[0]);
         this.goal[0] = this.pos[0] + Math.round( this.speed * Math.cos(theta) );
         this.goal[1] = this.pos[1] + Math.round( this.speed * Math.sin(theta) );  
         var distF;
-        //add repulsive forces from other cats (large forces that drop with distance factor)
-        for (var i=0; i < 3; i++) {
-            theta = Math.atan2(cats[i].pos[1] - this.pos[1], cats[i].pos[0] - this.pos[0]);
-            distF = Math.pow(distance(this.pos, cats[i].pos),0.56);
-            if(distF != 0) {
-                this.goal[0] += Math.round( this.repulse * Math.cos(theta) ) / distF;
-                this.goal[1] += Math.round( this.repulse * Math.sin(theta) ) / distF;
-            }            
+        //add repulsive forces from other cats if in bounds (forces drop with distance)
+        if(this.pos[0] >= corners[0][0] && this.pos[0] <= corners[2][0] &&
+           this.pos[1] >= corners[0][1] && this.pos[1] <= corners[2][1]) {
+            for (var i=0; i < 3; i++) {
+                theta = Math.atan2(cats[i].pos[1] - this.pos[1], cats[i].pos[0] - this.pos[0]);
+                distF = Math.pow(distance(this.pos, cats[i].pos),0.56);
+                if(distF != 0) {
+                    this.goal[0] += Math.round( this.repulse * Math.cos(theta) ) / distF;
+                    this.goal[1] += Math.round( this.repulse * Math.sin(theta) ) / distF;
+                }            
+            }
         }
     }
 };
@@ -263,23 +267,13 @@ function updateGameState() {
 }
 
 //Track the player's progress on the timer
-function addSec() {
-    seconds++;
-    if (seconds >= 60) {
-        seconds = 0;
-        minutes++;
-        if (minutes >= 60) {
-            minutes = 0;
-            hours++;
-        }
-    }
-    clock.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + 
-                        ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
-                        ":" + (seconds > 9 ? seconds : "0" + seconds);
+function incrementScore() {
+    points+= 25;
+    score.textContent = points+"pts";
     timer();
 }
 function timer() {
-    t = setTimeout(addSec, 1000/timeMult);
+    t = setTimeout(incrementScore, 500/timeMult);
 }
 
 function startMusic() {
@@ -303,9 +297,9 @@ function startGame() {
     timeMult = Number($('#timeMultiplier').val());
     interval = setInterval(updateGameState, 1000/(frameRate));
     gameActive = true;
-    clock = document.getElementById('clock')
-    clock.textContent = "00:00:00";
-    seconds = 0; minutes = 0; hours = 0;
+    score = document.getElementById('score')
+    score.textContent = "0pts";
+    points = 0;
     timer();
     //reset game pieces
     rat.pos =  [window.innerWidth/2, window.innerHeight/2];
@@ -345,7 +339,7 @@ function adjustToWindow(){
     rat.width = $('#ratPic').width()/2;
     cat1.height = cat2.height = cat3.height = $('#cat1').height()/2;
     cat1.width = cat2.width = cat3.width = $('#cat1').width()/2;
-    clockHeight = $('#clock').height();
+    scoreHeight = $('#score').height();
     corners = [ [cat3.width, cat3.height],
                 [window.innerWidth-cat3.width, cat3.height],
                 [window.innerWidth-cat3.width, window.innerHeight-cat3.height],
